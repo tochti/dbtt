@@ -1,25 +1,27 @@
 package dbtt
 
 import (
-	"aap/speci"
+	"fmt"
 	"testing"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	_ "github.com/mattes/migrate/driver/sqlite3"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/tochti/speci"
 )
 
 func Test_IsInTable(t *testing.T) {
-	specs, err := speci.ReadPostgreSQL("test")
+	specs, err := speci.ReadSQLite("test")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	pool, err := specs.DB()
+	fmt.Println(specs.String())
+	db, err := sqlx.Connect("sqlite3", specs.String())
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	db := sqlx.NewDb(pool, "postgres")
+	defer db.Close()
 
 	ResetDB(t, specs.String(), "./test-fixtures")
 
@@ -31,5 +33,4 @@ func Test_IsInTable(t *testing.T) {
 	}
 
 	IsInTable(t, db, "test_table", "id=?", 1)
-
 }

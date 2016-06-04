@@ -1,2 +1,4 @@
 *.swp
 go_dev
+glide.lock
+vendor
