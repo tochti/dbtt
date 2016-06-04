@@ -1,4 +1,4 @@
-package dbtm
+package dbtt
 
 import (
 	"database/sql"
