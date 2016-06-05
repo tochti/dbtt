@@ -1,7 +1,7 @@
 package dbtt
 
 import (
-	"fmt"
+	"os"
 	"testing"
 
 	"github.com/jmoiron/sqlx"
@@ -15,15 +15,17 @@ func Test_IsInTable(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer os.Remove(specs.Path)
 
-	fmt.Println(specs.String())
-	db, err := sqlx.Connect("sqlite3", specs.String())
+	pool, err := specs.DB()
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	db := sqlx.NewDb(pool, "sqlite3")
 	defer db.Close()
 
-	ResetDB(t, specs.String(), "./test-fixtures")
+	ResetDB(t, "sqlite3://"+specs.Path, "./test-fixtures")
 
 	IsNotInTable(t, db, "test_table", "id=?", 1)
 

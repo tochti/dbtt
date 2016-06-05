@@ -62,6 +62,6 @@ func IsNotInTable(t FatalMethods, db *sqlx.DB, table, where string, args ...inte
 func ResetDB(t FatalMethods, url, migrationDir string) {
 	errs, ok := migrate.ResetSync(url, migrationDir)
 	if !ok {
-		t.Fatal(errs)
+		t.Fatal("ResetDB error", errs)
 	}
 }
